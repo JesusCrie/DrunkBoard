@@ -14,5 +14,19 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    abort(501); // Not implemented
+    abort(404);
+});
+
+// Person endpoints
+Route::group(['prefix' => 'person'], function () {
+    // Resource endpoints
+    Route::get('/', 'PeopleController@get');
+    Route::get('/paginate', 'PeopleController@paginate');
+    Route::get('/{id}', 'PeopleController@getOne');
+    Route::post('/', 'PeopleController@post');
+    Route::put('/{id}', 'PeopleController@put');
+    Route::delete('/', 'PeopleController@delete');
+
+    // Vote
+    Route::post('{id}/vote/{rating}', 'VoteController@vote');
 });

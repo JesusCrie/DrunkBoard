@@ -10,6 +10,6 @@ class DatabaseSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        /* no-op */
+        $this->call(PeopleSeeder::class);
     }
 }

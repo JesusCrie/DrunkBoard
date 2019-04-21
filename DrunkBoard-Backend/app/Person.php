@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,10 +16,15 @@ class Person extends Model {
 
     public static $rules = [
         'first_name' => 'required',
-        'last_name' => 'nullable|string',
+        'last_name' => 'nullable',
         'country_iso' => 'nullable|size:2',
         'alcohol' => 'required|numeric',
         'story' => 'required'
+    ];
+
+    public static $editRules = [
+        'country_iso' => 'nullable|size:2',
+        'alcohol' => 'numeric'
     ];
 
     // Relationships
@@ -32,5 +39,23 @@ class Person extends Model {
         return $this->votes()
             ->where('ip', $ip ?: Request::ip())
             ->doesntExist();
+    }
+
+    public function averageVotes() {
+        return $this->votes()
+            ->average('rating');
+    }
+
+    public function mutateToArray() {
+        return [
+            'id' => $this->id,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'country_iso' => $this->country_iso,
+            'alcohol' => $this->alcohol,
+            'story' => $this->story,
+            'votes_amount' => $this->votes()->count(),
+            'votes_average' => $this->averageVotes()
+        ];
     }
 }

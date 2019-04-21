@@ -11,7 +11,7 @@ class CreatePeopleTable extends Migration {
             $table->increments('id');
             $table->string('first_name');
             $table->string('last_name')->nullable();
-            $table->char('country_iso', 2)->default('AA'); // AA doesn't match any ISO 3166 country code
+            $table->char('country_iso', 2)->nullable();
             $table->unsignedDecimal('alcohol', 5, 2);
             $table->text('story');
 
