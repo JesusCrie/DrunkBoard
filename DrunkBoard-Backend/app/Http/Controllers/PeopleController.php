@@ -61,7 +61,7 @@ class PeopleController extends Controller {
      * @return JsonResponse
      * @throws ValidationException
      */
-    public function post(Request $request) {
+    public function create(Request $request) {
         $this->validate($request, Person::$rules);
 
         $person = Person::create($request->all());
@@ -77,7 +77,7 @@ class PeopleController extends Controller {
      * @return JsonResponse
      * @throws ValidationException
      */
-    public function put(Request $request, int $id) {
+    public function edit(Request $request, int $id) {
         $this->validate($request, Person::$editRules);
 
         $person = Person::find($id);

@@ -22,12 +22,12 @@ Route::group(['prefix' => 'person'], function () {
     // Resource endpoints
     // Get
     Route::get('/', 'PeopleController@get');
-    Route::get('/paginate', 'PeopleController@paginate');
     Route::get('/{id}', 'PeopleController@getOne');
+    Route::get('/paginate', 'PeopleController@paginate');
 
     // Create/edit/delete/restore
-    Route::post('/', 'PeopleController@post');
-    Route::put('/{id}', 'PeopleController@put');
+    Route::post('/', 'PeopleController@create');
+    Route::put('/{id}', 'PeopleController@edit');
     Route::delete('/{id}', 'PeopleController@delete');
     Route::post('/restore/{id}', 'PeopleController@restore');
 
