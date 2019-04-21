@@ -20,12 +20,16 @@ Route::get('/', function () {
 // Person endpoints
 Route::group(['prefix' => 'person'], function () {
     // Resource endpoints
+    // Get
     Route::get('/', 'PeopleController@get');
     Route::get('/paginate', 'PeopleController@paginate');
     Route::get('/{id}', 'PeopleController@getOne');
+
+    // Create/edit/delete/restore
     Route::post('/', 'PeopleController@post');
     Route::put('/{id}', 'PeopleController@put');
-    Route::delete('/', 'PeopleController@delete');
+    Route::delete('/{id}', 'PeopleController@delete');
+    Route::post('/restore/{id}', 'PeopleController@restore');
 
     // Vote
     Route::post('{id}/vote/{rating}', 'VoteController@vote');

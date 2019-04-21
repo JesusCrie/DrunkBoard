@@ -7,6 +7,6 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class Controller extends BaseController {
 
     public function respond(int $status, array $data = []) {
-        return response()->json($data, $status);
+        return response()->json($data, $status, [], JSON_NUMERIC_CHECK);
     }
 }

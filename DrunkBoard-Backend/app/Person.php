@@ -17,13 +17,13 @@ class Person extends Model {
     public static $rules = [
         'first_name' => 'required',
         'last_name' => 'nullable',
-        'country_iso' => 'nullable|size:2',
+        'country_iso' => 'nullable|string|uppercase|size:2',
         'alcohol' => 'required|numeric',
         'story' => 'required'
     ];
 
     public static $editRules = [
-        'country_iso' => 'nullable|size:2',
+        'country_iso' => 'nullable|string|size:2',
         'alcohol' => 'numeric'
     ];
 
@@ -51,6 +51,7 @@ class Person extends Model {
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
+            //'country_iso' => $this->country_iso === '' ? null : $this->country_iso,
             'country_iso' => $this->country_iso,
             'alcohol' => $this->alcohol,
             'story' => $this->story,

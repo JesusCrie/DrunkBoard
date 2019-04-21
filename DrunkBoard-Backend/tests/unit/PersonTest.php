@@ -1,5 +1,6 @@
 <?php
 
+use App\Person;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 
 class PersonTest extends TestCase {
@@ -7,10 +8,10 @@ class PersonTest extends TestCase {
     use DatabaseMigrations;
 
     public function testPersonDefault() {
-        $person = factory(App\Person::class)->create();
+        $person = factory(Person::class)->create();
         $person->refresh();
 
-        $this->assertEquals('AA', $person->country_iso);
+        $this->assertNull($person->country_iso);
 
         $this->seeInDatabase('people', [
             'id' => $person->id
@@ -18,7 +19,7 @@ class PersonTest extends TestCase {
     }
 
     public function testPersonName() {
-        $person = factory(App\Person::class)->states(['withCountry', 'noLastName'])->create();
+        $person = factory(Person::class)->states(['withCountry', 'noLastName'])->create();
 
         $this->seeInDatabase('people', [
             'first_name' => $person->first_name
@@ -30,19 +31,19 @@ class PersonTest extends TestCase {
     }
 
     public function testPersonMinimal() {
-        $person = factory(App\Person::class)->state('noLastName')->create();
+        factory(Person::class)->state('noLastName')->create();
 
         $this->seeInDatabase('people', [
             'last_name' => null,
         ]);
 
         $this->seeInDatabase('people', [
-            'country_iso' => 'AA'
+            'country_iso' => null
         ]);
     }
 
     public function testSoftDelete() {
-        $person = factory(App\Person::class)->create();
+        $person = factory(Person::class)->create();
 
         $this->seeInDatabase('people', [
             'id' => $person->id

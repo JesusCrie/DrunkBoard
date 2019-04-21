@@ -8,22 +8,62 @@ class PersonE2ETest extends TestCase {
 
     use DatabaseMigrations;
 
-    public function testManualPerson() {
+    // Get endpoints body
+
+    public function testGetAll() {
+        $persons = factory(Person::class, 5)->create();
+
+        $this->json('GET', '/person')
+            ->seeJson($persons[0]->mutateToArray())
+            ->seeJson($persons[4]->mutateToArray());
+    }
+
+    public function testGetById() {
+        $person = factory(Person::class)->create();
+
+        $this->json('GET', '/person/1')
+            ->seeJsonEquals($person->mutateToArray());
+    }
+
+    public function testGetByIdFail() {
+        factory(Person::class)->create();
+
+        $this->json('GET', '/person/2')
+            ->seeJsonEquals([]);
+    }
+
+    // Get endpoints status
+
+    public function testGetAllStatus() {
+        $res = $this->json('GET', '/person')->response;
+        $this->assertEquals(200, $res->status());
+
+        factory(Person::class)->create();
+
+        $res = $this->json('GET', '/person')->response;
+        $this->assertEquals(200, $res->status());
+    }
+
+    public function testGetByIdStatus() {
+        factory(Person::class)->create();
+
+        $res = $this->json('GET', '/person/1')->response;
+        $this->assertEquals(200, $res->status());
+
+        $res = $this->json('GET', '/person/2')->response;
+        $this->assertEquals(404, $res->status());
+    }
+
+    // Create endpoints body
+
+    public function testCreateManual() {
         $person = factory(Person::class)->create();
         $person->refresh();
 
-        $this->json('GET', '/person/' . $person->id, [])
-            ->seeJson([
-                'id' => $person->id,
-                'first_name' => $person->first_name,
-                'last_name' => $person->last_name,
-                'country_iso' => $person->country_iso,
-                'alcohol' => $person->alcohol,
-                'story' => $person->story
-            ]);
+        $this->seeInDatabase('people', ['id' => $person->id]);
     }
 
-    public function testCreatePerson() {
+    public function testCreatePost() {
         $data = [
             'first_name' => 'First name',
             'last_name' => 'Last name',
@@ -37,7 +77,7 @@ class PersonE2ETest extends TestCase {
         $this->seeInDatabase('people', $data);
     }
 
-    public function testCreatePersonNoLastNameNoCountry() {
+    public function testCreatePostNoLastNameNoCountry() {
         $this->json('POST', '/person', [
             'first_name' => 'First name',
             'alcohol' => 3,
@@ -60,56 +100,158 @@ class PersonE2ETest extends TestCase {
             ]);
     }
 
-    public function testPaginate() {
-        $persons = factory(Person::class, 20)->create();
+    public function testCreateErroredValidation() {
+        $data = [];
 
-        $this->json('GET', '/person/paginate?amount=5')
-            ->seeJson([
-                'id' => 1
-            ])
-            ->seeJson([
-                'id' => 2
-            ])
-            ->seeJson([
-                'id' => 3
-            ])
-            ->seeJson([
-                'id' => 4
-            ])
-            ->seeJson([
-                'id' => 5
-            ])
-            ->dontSeeJson([
-                'id' => 6
-            ]);
+        $data['first_name'] = null;
+        $data['country_iso'] = 'a';
+        $data['story'] = 'Hey';
 
-        $this->json('GET', '/person/paginate?page=1&amount=5')
-            ->seeJson([
-                'id' => 1
-            ])
-            ->dontSeeJson([
-                'id' => 6
-            ]);
-
-        $this->json('GET', '/person/paginate?page=2&amount=5')
-            ->dontSeeJson([
-                'id' => 2
-            ])
-            ->dontSeeJson([
-                'id' => 5
-            ])
-            ->seeJson([
-                'id' => 6
-            ])
-            ->seeJson([
-                'id' => 10
-            ])
-            ->dontSeeJson([
-                'id' => 11
+        $this->json('POST', '/person', $data)
+            ->seeJsonStructure([
+                'first_name',
+                'country_iso',
+                'alcohol'
             ]);
     }
 
-    public function testEditPerson() {
+    public function testCreateFailEmpty() {
+        $this->json('POST', '/person', [])
+            ->seeJsonStructure([
+                'first_name',
+                'alcohol',
+                'story'
+            ]);
+    }
+
+    public function testCreateFailWrongIso() {
+        $data = [
+            'first_name' => 'Hey',
+            'country_iso' => 'a',
+            'alcohol' => 1,
+            'story' => 'Lorem'
+        ];
+
+        $checkFail = function (array $data) {
+            $this->json('POST', '/person', $data)
+                ->seeJsonStructure(['country_iso']);
+        };
+
+        $checkFail($data);
+
+        $data['country_iso'] = 'AAA';
+        $checkFail($data);
+
+        $data['country_iso'] = 'aa';
+        $checkFail($data);
+
+        $data['country_iso'] = 'FR';
+        $this->json('POST', '/person', $data)
+            ->seeJsonStructure(['id'])
+            ->seeJson([
+                'country_iso' => 'FR'
+            ]);
+    }
+
+    public function testCreateFailWrongAlcohol() {
+        $data = [
+            'first_name' => 'Hey',
+            'alcohol' => null,
+            'story' => 'Lorem'
+        ];
+
+        $checkFail = function (array $data) {
+            $this->json('POST', '/person', $data)
+                ->seeJsonStructure(['alcohol']);
+        };
+
+        $checkFail($data);
+
+        $data['alcohol'] = 'a';
+        $checkFail($data);
+
+        $data['alcohol'] = 5.3;
+        $this->json('POST', '/person', $data)
+            ->seeJsonStructure(['id'])
+            ->seeJson(['alcohol' => 5.3]);
+    }
+
+    // Create endpoints status
+
+    public function testCreateStatusSuccess() {
+        $res = $this->json('POST', '/person', [
+            'first_name' => 'First',
+            'alcohol' => 1,
+            'story' => 'Lorem'
+        ])->response;
+
+        $this->assertEquals(201, $res->status());
+    }
+
+    public function testCreateStatusFailed() {
+        $res = $this->json('POST', '/person', [])->response;
+
+        $this->assertEquals(422, $res->status());
+    }
+
+    // Pagination endpoint body
+
+    public function testPaginate() {
+        factory(Person::class, 20)->create();
+
+        $this->json('GET', '/person/paginate?amount=5')
+            ->seeJson(['id' => 1])
+            ->seeJson(['id' => 2])
+            ->seeJson(['id' => 3])
+            ->seeJson(['id' => 4])
+            ->seeJson(['id' => 5])
+            ->dontSeeJson(['id' => 6]);
+
+        $this->json('GET', '/person/paginate?page=1&amount=5')
+            ->seeJson(['id' => 1])
+            ->dontSeeJson(['id' => 6]);
+
+        $this->json('GET', '/person/paginate?page=2&amount=5')
+            ->dontSeeJson(['id' => 2])
+            ->dontSeeJson(['id' => 5])
+            ->seeJson(['id' => 6])
+            ->seeJson(['id' => 10])
+            ->dontSeeJson(['id' => 11]);
+    }
+
+    public function testPaginateDefaultAmount() {
+        factory(Person::class, 60)->create();
+
+        $this->json('GET', '/person/paginate')
+            ->seeJson(['id' => 1])
+            ->seeJson(['id' => 50])
+            ->dontSeeJson(['id' => 51]);
+
+        $this->json('GET', '/person/paginate?&page=2')
+            ->dontSeeJson(['id' => 50])
+            ->seeJson(['id' => 51]);
+    }
+
+    public function testPaginateOutOfBounds() {
+        factory(Person::class, 5)->create();
+
+        $this->json('GET', '/person/paginate?page=2&amount=5')
+            ->seeJsonEquals([]);
+    }
+
+    // Pagination endpoint status
+
+    public function testPaginateStatusSuccess() {
+        factory(Person::class, 5)->create();
+
+        $res = $this->json('GET', '/person/paginate')->response;
+
+        $this->assertEquals(200, $res->status());
+    }
+
+    // Edit endpoint body
+
+    public function testEdit() {
         $person = factory(Person::class)->create(['alcohol' => 4]);
         $person->refresh();
 
@@ -131,5 +273,87 @@ class PersonE2ETest extends TestCase {
 
         $this->assertEquals('FR', $person->country_iso);
         $this->assertEquals(5, $person->alcohol);
+    }
+
+    // Edit endpoint status
+
+    public function testEditStatusNotFound() {
+        $res = $this->json('PUT', '/person/1', [])->response;
+        $this->assertEquals(404, $res->status());
+    }
+
+    public function testEditStatusSuccess() {
+        factory(Person::class)->create();
+
+        $res = $this->json('PUT', '/person/1', ['country_iso' => 'FR'])->response;
+        $this->assertEquals(200, $res->status());
+    }
+
+    public function testEditStatusFailed() {
+        factory(Person::class)->create();
+
+        $res = $this->json('PUT', '/person/1', ['country_iso' => 'a'])->response;
+        $this->assertEquals(422, $res->status());
+    }
+
+    // Delete endpoint
+
+    public function testDelete() {
+        $person = factory(Person::class)->create();
+
+        $this->json('DELETE', '/person/1');
+
+        $person->refresh();
+        $this->assertTrue($person->trashed());
+    }
+
+    // Delete endpoint status
+
+    public function testDeleteStatusSuccess() {
+        factory(Person::class)->create();
+
+        $res = $this->json('DELETE', '/person/1')->response;
+        $this->assertEquals(204, $res->status());
+    }
+
+    public function testDeleteStatusNotFound() {
+        $res = $this->json('DELETE', '/person/1')->response;
+        $this->assertEquals(404, $res->status());
+    }
+
+    // Restore endpoint
+
+    public function testRestore() {
+        $person = factory(Person::class)->create();
+        $person->delete();
+
+        $this->json('POST', '/person/restore/1');
+
+        $person->refresh();
+        $this->assertFalse($person->trashed());
+    }
+
+    public function testRestoreIgnoreExistant() {
+        $person = factory(Person::class)->create();
+
+        $this->json('POST', '/person/restore/1');
+
+        $person->refresh();
+        $this->assertFalse($person->trashed());
+    }
+
+    // Restore endpoint status
+
+    public function testRestoreStatusSuccess() {
+        $person = factory(Person::class)->create();
+        $person->delete();
+
+        $res = $this->json('POST', '/person/restore/1')->response;
+        $this->assertEquals(204, $res->status());
+    }
+
+    public function testRestoreStatusNotFound() {
+        $res = $this->json('POST', '/person/restore/1')->response;
+        $this->assertEquals(404, $res->status());
     }
 }
