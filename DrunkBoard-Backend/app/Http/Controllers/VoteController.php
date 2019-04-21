@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Person;
 use App\Vote;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class VoteController extends Controller {
 
+    /**
+     * Add a vote on a person
+     *
+     * @param Request $request
+     * @param int $id
+     * @param int $rating
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     public function vote(Request $request, int $id, int $rating) {
         $this->validate($request, Vote::$rules);
 
@@ -25,6 +36,6 @@ class VoteController extends Controller {
             'rating' => $rating
         ]);
 
-        return $this->respond(Response::HTTP_OK, $vote);
+        return $this->respond(Response::HTTP_CREATED, $vote);
     }
 }

@@ -31,6 +31,9 @@ Route::group(['prefix' => 'person'], function () {
     Route::delete('/{id}', 'PeopleController@delete');
     Route::post('/restore/{id}', 'PeopleController@restore');
 
-    // Vote
-    Route::post('{id}/vote/{rating}', 'VoteController@vote');
+    // Vote endpoints
+    Route::post('/{id}/vote/{rating}', 'VoteController@vote');
+    Route::get('/{id}/vote/', 'VoteController@get');
+    Route::put('/{id}/vote/{rating}', 'VoteController@edit');
+    Route::delete('/{id}/vote', 'VoteController@delete');
 });

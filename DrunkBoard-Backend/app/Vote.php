@@ -11,7 +11,13 @@ class Vote extends Model {
     public static $rules = [
         'person_id' => 'bail|required|numeric|exists:votes',
         'rating' => 'required|numeric|min:0|max:5',
-        'ip' => 'required|ip'
+        'ip' => 'forbidden'
+    ];
+
+    public static $editRules = [
+        'person_id' => 'forbidden',
+        'rating' => 'numeric|min:0|max:5',
+        'ip' => 'forbidden'
     ];
 
     public $timestamps = false;

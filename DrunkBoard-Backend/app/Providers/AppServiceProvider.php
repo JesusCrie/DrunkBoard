@@ -13,8 +13,14 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
+        // Validate only uppercase strings
         Validator::extend('uppercase', function ($attribute, $value, $parameters, $validator) {
             return strtoupper($value) === $value;
+        });
+
+        // Validate nothing, the attribute must not be there
+        Validator::extend('forbidden', function ($attribute, $value, $parameters, $validator) {
+            return false;
         });
     }
 
