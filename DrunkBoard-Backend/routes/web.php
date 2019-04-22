@@ -22,8 +22,8 @@ Route::group(['prefix' => 'person'], function () {
     // Resource endpoints
     // Get
     Route::get('/', 'PeopleController@get');
-    Route::get('/{id}', 'PeopleController@getOne');
     Route::get('/paginate', 'PeopleController@paginate');
+    Route::get('/{id}', 'PeopleController@getOne');
 
     // Create/edit/delete/restore
     Route::post('/', 'PeopleController@create');
@@ -33,7 +33,7 @@ Route::group(['prefix' => 'person'], function () {
 
     // Vote endpoints
     Route::post('/{id}/vote/{rating}', 'VoteController@vote');
-    Route::get('/{id}/vote/', 'VoteController@get');
     Route::put('/{id}/vote/{rating}', 'VoteController@edit');
+    Route::get('/{id}/vote', 'VoteController@get');
     Route::delete('/{id}/vote', 'VoteController@delete');
 });

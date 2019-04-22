@@ -41,9 +41,9 @@ class Person extends Model {
      * @param string|null $ip
      * @return bool
      */
-    public function canVote(string $ip = null) {
+    public function canVote(string $ip) {
         return $this->votes()
-            ->where('ip', $ip ?: Request::ip())
+            ->where('ip', $ip)
             ->doesntExist();
     }
 
@@ -51,14 +51,14 @@ class Person extends Model {
      * Add a vote from the given ip to the current Person and returns it.
      *
      * @param int $rating
-     * @param string|null $ip
+     * @param string $ip
      * @return Vote
      */
-    public function vote(int $rating, string $ip = null) {
+    public function vote(int $rating, string $ip) {
         return Vote::create([
             'person_id' => $this->id,
             'rating' => $rating,
-            'ip' => $ip ?: Request::ip()
+            'ip' => $ip
         ]);
     }
 

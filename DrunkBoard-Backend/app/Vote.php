@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model {
 
-    protected $fillable = ['rating', 'voter_id'];
+    protected $fillable = ['rating', 'person_id', 'ip'];
 
     protected $dates = [];
 
@@ -26,5 +26,15 @@ class Vote extends Model {
 
     public function person() {
         return $this->belongsTo('App\Person');
+    }
+
+    // Utilities
+
+    public function mutateToArray() {
+        return [
+            'id' => $this->id,
+            'person_id' => $this->person_id,
+            'rating' => $this->rating
+        ];
     }
 }
