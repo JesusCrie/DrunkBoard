@@ -63,12 +63,12 @@ class VoteE2ETest extends TestCase {
         factory(Person::class)->create();
 
         $this->ipJson('POST', '/person/1/vote/3', static::$mockIpPrimary);
-        $this->seeStatusCode(201);
+        $this->assertResponseStatus(201);
     }
 
     public function testAddVoteStatusNotFound() {
         $this->ipJson('POST', '/person/1/vote/3', static::$mockIpPrimary);
-        $this->seeStatusCode(404);
+        $this->assertResponseStatus(404);
     }
 
     public function testAddVoteStatusAlreadyVote() {
@@ -76,14 +76,14 @@ class VoteE2ETest extends TestCase {
         $person->vote(3, static::$mockIpPrimary);
 
         $this->ipJson('POST', '/person/1/vote/3', static::$mockIpPrimary);
-        $this->seeStatusCode(403);
+        $this->assertResponseStatus(403);
     }
 
     public function testAddVoteStatusOutOfRange() {
         factory(Person::class)->create();
 
         $this->ipJson('POST', '/person/1/vote/6', static::$mockIpPrimary);
-        $this->seeStatusCode(422);
+        $this->assertResponseStatus(422);
     }
 
     // Get vote endpoint body
@@ -105,19 +105,19 @@ class VoteE2ETest extends TestCase {
         $person->vote(3, static::$mockIpPrimary);
 
         $this->ipJson('GET', '/person/1/vote', static::$mockIpPrimary);
-        $this->seeStatusCode(200);
+        $this->assertResponseOk();
     }
 
     public function testGetVoteStatusNotFound() {
         $this->ipJson('GET', '/person/1/vote', static::$mockIpPrimary);
-        $this->seeStatusCode(404);
+        $this->assertResponseStatus(404);
     }
 
     public function testGetVoteStatusNoVote() {
         factory(Person::class)->create();
 
         $this->ipJson('GET', '/person/1/vote', static::$mockIpPrimary);
-        $this->seeStatusCode(403);
+        $this->assertResponseStatus(403);
     }
 
     // Edit vote endpoint body
@@ -157,19 +157,19 @@ class VoteE2ETest extends TestCase {
         $person->vote(3, static::$mockIpPrimary);
 
         $this->ipJson('PUT', '/person/1/vote/5', static::$mockIpPrimary);
-        $this->seeStatusCode(200);
+        $this->assertResponseOk();
     }
 
     public function testEditVoteStatusNotFound() {
         $this->ipJson('PUT', '/person/1/vote/5', static::$mockIpPrimary);
-        $this->seeStatusCode(404);
+        $this->assertResponseStatus(404);
     }
 
     public function testEditVoteStatusNoVote() {
         factory(Person::class)->create();
 
         $this->ipJson('PUT', '/person/1/vote/3', static::$mockIpPrimary);
-        $this->seeStatusCode(403);
+        $this->assertResponseStatus(403);
     }
 
     // Delete vote endpoint body
@@ -195,19 +195,19 @@ class VoteE2ETest extends TestCase {
         $person->vote(3, static::$mockIpPrimary);
 
         $this->ipJson('DELETE', '/person/1/vote', static::$mockIpPrimary);
-        $this->seeStatusCode(204);
+        $this->assertResponseStatus(204);
     }
 
     public function testDeleteVoteStatusNotFound() {
         $this->ipJson('DELETE', '/person/1/vote', static::$mockIpPrimary);
-        $this->seeStatusCode(404);
+        $this->assertResponseStatus(404);
     }
 
     public function testDeleteVoteStatusNoVote() {
         factory(Person::class)->create();
 
         $this->ipJson('DELETE', '/person/1/vote', static::$mockIpPrimary);
-        $this->seeStatusCode(403);
+        $this->assertResponseStatus(403);
     }
 
     // Utils

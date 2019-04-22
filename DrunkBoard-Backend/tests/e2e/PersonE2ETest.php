@@ -35,23 +35,23 @@ class PersonE2ETest extends TestCase {
     // Get endpoints status
 
     public function testGetAllStatus() {
-        $res = $this->json('GET', '/person')->response;
-        $this->assertEquals(200, $res->status());
+        $this->json('GET', '/person');
+        $this->assertResponseOk();
 
         factory(Person::class)->create();
 
-        $res = $this->json('GET', '/person')->response;
-        $this->assertEquals(200, $res->status());
+        $this->json('GET', '/person')->response;
+        $this->assertResponseOk();
     }
 
     public function testGetByIdStatus() {
         factory(Person::class)->create();
 
-        $res = $this->json('GET', '/person/1')->response;
-        $this->assertEquals(200, $res->status());
+        $this->json('GET', '/person/1');
+        $this->assertResponseOk();
 
-        $res = $this->json('GET', '/person/2')->response;
-        $this->assertEquals(404, $res->status());
+        $this->json('GET', '/person/2');
+        $this->assertResponseStatus(404);
     }
 
     // Create endpoints body
@@ -179,19 +179,19 @@ class PersonE2ETest extends TestCase {
     // Create endpoints status
 
     public function testCreateStatusSuccess() {
-        $res = $this->json('POST', '/person', [
+        $this->json('POST', '/person', [
             'first_name' => 'First',
             'alcohol' => 1,
             'story' => 'Lorem'
-        ])->response;
+        ]);
 
-        $this->assertEquals(201, $res->status());
+        $this->assertResponseStatus(201);
     }
 
     public function testCreateStatusFailed() {
-        $res = $this->json('POST', '/person', [])->response;
+        $this->json('POST', '/person', []);
 
-        $this->assertEquals(422, $res->status());
+        $this->assertResponseStatus(422);
     }
 
     // Pagination endpoint body
@@ -244,9 +244,9 @@ class PersonE2ETest extends TestCase {
     public function testPaginateStatusSuccess() {
         factory(Person::class, 5)->create();
 
-        $res = $this->json('GET', '/person/paginate')->response;
+        $this->json('GET', '/person/paginate');
 
-        $this->assertEquals(200, $res->status());
+        $this->assertResponseOk();
     }
 
     // Edit endpoint body
@@ -278,22 +278,22 @@ class PersonE2ETest extends TestCase {
     // Edit endpoint status
 
     public function testEditStatusNotFound() {
-        $res = $this->json('PUT', '/person/1', [])->response;
-        $this->assertEquals(404, $res->status());
+        $this->json('PUT', '/person/1', []);
+        $this->assertResponseStatus(404);
     }
 
     public function testEditStatusSuccess() {
         factory(Person::class)->create();
 
-        $res = $this->json('PUT', '/person/1', ['country_iso' => 'FR'])->response;
-        $this->assertEquals(200, $res->status());
+        $this->json('PUT', '/person/1', ['country_iso' => 'FR']);
+        $this->assertResponseOk();
     }
 
     public function testEditStatusFailed() {
         factory(Person::class)->create();
 
-        $res = $this->json('PUT', '/person/1', ['country_iso' => 'a'])->response;
-        $this->assertEquals(422, $res->status());
+        $this->json('PUT', '/person/1', ['country_iso' => 'a']);
+        $this->assertResponseStatus(422);
     }
 
     // Delete endpoint
@@ -312,13 +312,13 @@ class PersonE2ETest extends TestCase {
     public function testDeleteStatusSuccess() {
         factory(Person::class)->create();
 
-        $res = $this->json('DELETE', '/person/1')->response;
-        $this->assertEquals(204, $res->status());
+        $this->json('DELETE', '/person/1');
+        $this->assertResponseStatus(204);
     }
 
     public function testDeleteStatusNotFound() {
-        $res = $this->json('DELETE', '/person/1')->response;
-        $this->assertEquals(404, $res->status());
+        $this->json('DELETE', '/person/1');
+        $this->assertResponseStatus(404);
     }
 
     // Restore endpoint
@@ -333,7 +333,7 @@ class PersonE2ETest extends TestCase {
         $this->assertFalse($person->trashed());
     }
 
-    public function testRestoreIgnoreExistant() {
+    public function testRestoreIgnoreExistent() {
         $person = factory(Person::class)->create();
 
         $this->json('POST', '/person/restore/1');
@@ -348,12 +348,12 @@ class PersonE2ETest extends TestCase {
         $person = factory(Person::class)->create();
         $person->delete();
 
-        $res = $this->json('POST', '/person/restore/1')->response;
-        $this->assertEquals(204, $res->status());
+        $this->json('POST', '/person/restore/1');
+        $this->assertResponseStatus(204);
     }
 
     public function testRestoreStatusNotFound() {
-        $res = $this->json('POST', '/person/restore/1')->response;
-        $this->assertEquals(404, $res->status());
+        $this->json('POST', '/person/restore/1');
+        $this->assertResponseStatus(404);
     }
 }
