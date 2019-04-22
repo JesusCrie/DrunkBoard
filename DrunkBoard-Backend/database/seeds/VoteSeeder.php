@@ -1,8 +1,9 @@
 <?php
 
+use App\Vote;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder {
+class VoteSeeder extends Seeder {
 
     /**
      * Run the database seeds.
@@ -10,7 +11,7 @@ class DatabaseSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        $this->call(PeopleSeeder::class);
-        $this->call(VoteSeeder::class);
+        factory(Vote::class, 50)->create();
+        factory(Vote::class, 20)->state('ipv6')->create();
     }
 }

@@ -196,7 +196,7 @@ class PersonE2ETest extends TestCase {
 
     // Pagination endpoint body
 
-    public function testPaginate() {
+    public function testPaginate_() {
         factory(Person::class, 20)->create();
 
         $this->json('GET', '/person/paginate?amount=5')
@@ -219,7 +219,7 @@ class PersonE2ETest extends TestCase {
             ->dontSeeJson(['id' => 11]);
     }
 
-    public function testPaginateDefaultAmount() {
+    public function testPaginateDefaultAmount_() {
         factory(Person::class, 60)->create();
 
         $this->json('GET', '/person/paginate')
@@ -232,7 +232,7 @@ class PersonE2ETest extends TestCase {
             ->seeJson(['id' => 51]);
     }
 
-    public function testPaginateOutOfBounds() {
+    public function testPaginateOutOfBounds_() {
         factory(Person::class, 5)->create();
 
         $this->json('GET', '/person/paginate?page=2&amount=5')
@@ -241,12 +241,53 @@ class PersonE2ETest extends TestCase {
 
     // Pagination endpoint status
 
-    public function testPaginateStatusSuccess() {
+    public function testPaginateStatusSuccess_() {
         factory(Person::class, 5)->create();
 
         $this->json('GET', '/person/paginate');
 
         $this->assertResponseOk();
+    }
+
+    // New paginate endpoint
+
+    public function testPaginateDefault() {
+        factory(Person::class, 60)->create();
+
+        $this->json('GET', '/person/paginate')
+            ->seeJson(['id' => 1])
+            ->seeJson(['id' => 50])
+            ->dontSeeJson(['id' => 51]);
+    }
+
+    public function testPaginateBasic() {
+        factory(Person::class, 20)->create();
+
+        $this->call('GET', '/person/paginate', [
+            'page' => 2,
+            'amount' => 10
+        ]);
+
+        $this->seeJson(['id' => 11])
+            ->seeJson(['id' => 20])
+            ->dontSeeJson(['id' => 21]);
+    }
+
+    public function testPaginateFilter() {
+        $persons = array_merge(
+            factory(Person::class, 20)->make(['country_iso' => 'ZZ']),
+            factory(Person::class, 10)
+        );
+        shuffle($persons);
+        foreach ($persons as $p) $p->save();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'country_iso=ZZ'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(20, count($content));
     }
 
     // Edit endpoint body

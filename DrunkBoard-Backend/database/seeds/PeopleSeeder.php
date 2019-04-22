@@ -1,5 +1,6 @@
 <?php
 
+use App\Person;
 use Illuminate\Database\Seeder;
 
 class PeopleSeeder extends Seeder {
@@ -10,7 +11,8 @@ class PeopleSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        factory(App\Person::class, 10)->state('withCountry')->create();
-        factory(App\Person::class)->state('noLastName')->create();
+        factory(Person::class, 20)->state('withCountry')->create();
+        factory(Person::class, 4)->states(['noLastName', 'withCountry'])->create();
+        factory(Person::class, 5)->create();
     }
 }
