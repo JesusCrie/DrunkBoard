@@ -20,4 +20,14 @@ class BestOf extends Model {
     public function person() {
         return $this->belongsTo("App\Person");
     }
+
+    // Utilities
+
+    public function mutateToArray() {
+        return [
+            'id' => $this->id,
+            'person_id' => $this->person_id,
+            'mention' => $this->mention
+        ];
+    }
 }

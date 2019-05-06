@@ -276,7 +276,7 @@ class PersonE2ETest extends TestCase {
     public function testPaginateFilter() {
         $persons = array_merge(
             factory(Person::class, 20)->make(['country_iso' => 'ZZ']),
-            factory(Person::class, 10)
+            factory(Person::class, 10)->state('withCountry')->make()
         );
         shuffle($persons);
         foreach ($persons as $p) $p->save();
