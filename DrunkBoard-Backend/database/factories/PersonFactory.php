@@ -24,3 +24,7 @@ $factory->state(Person::class, 'withCountry', function (Faker $faker) {
 $factory->state(Person::class, 'noLastName', [
     'last_name' => null
 ]);
+
+$factory->state(Person::class, 'noDrunk', [
+    'alcohol' => 0
+]);

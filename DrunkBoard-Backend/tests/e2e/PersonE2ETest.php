@@ -196,7 +196,7 @@ class PersonE2ETest extends TestCase {
 
     // Pagination endpoint body
 
-    public function testPaginate_() {
+    public function testPaginate() {
         factory(Person::class, 20)->create();
 
         $this->json('GET', '/person/paginate?amount=5')
@@ -219,7 +219,7 @@ class PersonE2ETest extends TestCase {
             ->dontSeeJson(['id' => 11]);
     }
 
-    public function testPaginateDefaultAmount_() {
+    public function testPaginateDefaultAmount() {
         factory(Person::class, 60)->create();
 
         $this->json('GET', '/person/paginate')
@@ -232,7 +232,7 @@ class PersonE2ETest extends TestCase {
             ->seeJson(['id' => 51]);
     }
 
-    public function testPaginateOutOfBounds_() {
+    public function testPaginateOutOfBounds() {
         factory(Person::class, 5)->create();
 
         $this->json('GET', '/person/paginate?page=2&amount=5')
@@ -241,7 +241,7 @@ class PersonE2ETest extends TestCase {
 
     // Pagination endpoint status
 
-    public function testPaginateStatusSuccess_() {
+    public function testPaginateStatusSuccess() {
         factory(Person::class, 5)->create();
 
         $this->json('GET', '/person/paginate');
@@ -273,21 +273,172 @@ class PersonE2ETest extends TestCase {
             ->dontSeeJson(['id' => 21]);
     }
 
-    public function testPaginateFilter() {
+    public function testPaginateFilterCountry() {
         $persons = array_merge(
-            factory(Person::class, 20)->make(['country_iso' => 'ZZ']),
-            factory(Person::class, 10)->state('withCountry')->make()
+            factory(Person::class, 20)->make(['country_iso' => 'ZZ'])->all(),
+            factory(Person::class, 10)->state('withCountry')->make()->all()
         );
         shuffle($persons);
         foreach ($persons as $p) $p->save();
 
         $this->call('GET', '/person/paginate', [
-            'filters' => 'country_iso=ZZ'
+            'filters' => 'country|ZZ'
         ]);
 
         $content = json_decode($this->response->content());
         $this->assertIsArray($content);
         $this->assertEquals(20, count($content));
+        $this->assertResponseOk();
+    }
+
+    public function testPaginateFilterName() {
+        $persons = array_merge(
+            factory(Person::class, 5)->make(['first_name' => 'AAAAAB'])->all(),
+            factory(Person::class, 5)->make(['last_name' => 'AAAAAC'])->all(),
+            factory(Person::class, 10)->make()->all()
+        );
+        shuffle($persons);
+        foreach ($persons as $p) $p->save();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'name|AAA'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(10, count($content));
+        $this->assertResponseOk();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'name|BAAA'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(0, count($content));
+        $this->assertResponseStatus(404);
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'name|AAAAAB'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(5, count($content));
+        $this->assertResponseOk();
+    }
+
+    public function testPaginateFilterAlcohol() {
+        $persons = array_merge(
+            factory(Person::class, 5)->make(['alcohol' => 5])->all(),
+            factory(Person::class, 5)->make(['alcohol' => 10])->all(),
+            factory(Person::class, 5)->make(['alcohol' => 15])->all(),
+            factory(Person::class, 20)->state('noDrunk')->make()->all()
+        );
+        shuffle($persons);
+        foreach ($persons as $p) $p->save();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'alcohol|1'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(15, count($content));
+        $this->assertResponseOk();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'alcohol||1'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(20, count($content));
+        $this->assertResponseOk();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'alcohol|6|15'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(5, count($content));
+        $this->assertResponseOk();
+    }
+
+    public function testPaginateFilterVoteAvg() {
+        $persons = factory(Person::class, 15)->create()->all();
+
+        for ($i = 0; $i < 5; ++$i)
+            $persons[$i]->vote(0, '163.118.244.157');
+        for ($i = 5; $i < 10; ++$i)
+            $persons[$i]->vote(3, '163.118.244.157');
+        for ($i = 10; $i < 15; ++$i)
+            $persons[$i]->vote(5, '163.118.244.157');
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'vote_avg|1'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(10, count($content));
+        $this->assertResponseOk();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'vote_avg||1'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(5, count($content));
+        $this->assertResponseOk();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'vote_avg|1|5'
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(5, count($content));
+        $this->assertResponseOk();
+    }
+
+    public function testPaginateFilterDate() {
+        $persons = array_merge(
+            factory(Person::class, 5)->make(['created_at' => new DateTime('01/01/2000 00:00')])->all(),
+            factory(Person::class, 5)->make(['created_at' => new DateTime('01/01/2000 12:00')])->all(),
+            factory(Person::class, 5)->make(['created_at' => new DateTime('01/01/2000 23:59')])->all()
+        );
+        shuffle($persons);
+        foreach ($persons as $p) $p->save();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'date|946688400' // 01:00
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(10, count($content));
+        $this->assertResponseOk();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'date||946738800' // 15:00
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(10, count($content));
+        $this->assertResponseOk();
+
+        $this->call('GET', '/person/paginate', [
+            'filters' => 'date|946717200|946731600' // 09:00 - 13:00
+        ]);
+
+        $content = json_decode($this->response->content());
+        $this->assertIsArray($content);
+        $this->assertEquals(5, count($content));
+        $this->assertResponseOk();
     }
 
     // Edit endpoint body
