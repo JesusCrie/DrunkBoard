@@ -1,0 +1,29 @@
+.nav-container {
+  margin: 0 3vw;
+  width: 100%;
+
+  display: flex;
+  justify-items: center;
+
+  * {
+    margin: 0 0.5vw;
+  }
+
+  :first-child {
+    margin-left: 0;
+  }
+
+  :last-child {
+    margin-right: 0;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+    transition: color 200ms;
+
+    &:active {
+      color: gray;
+    }
+  }
+}
