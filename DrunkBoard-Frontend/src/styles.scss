@@ -16,3 +16,15 @@ body {
   justify-items: center;
   align-items: center;
 }
+
+.spacing-container > * {
+  margin: 0 0.2vw !important;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}

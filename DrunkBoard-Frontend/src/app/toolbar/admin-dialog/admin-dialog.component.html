@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Activate admin tools</h1>
+
+<form (submit)="login()">
+  <mat-dialog-content>
+    <mat-form-field>
+      <input matInput type="password" placeholder="Password" [formControl]="password" required>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="spacing-container float-right">
+    <mat-spinner *ngIf="isWaiting" diameter="24"></mat-spinner>
+    <button mat-stroked-button mat-dialog-close [disabled]="isWaiting" tabindex="-1">Cancel</button>
+    <button mat-stroked-button [disabled]="isWaiting" color="accent" tabindex="-1" (click)="login()">Login</button>
+  </mat-dialog-actions>
+</form>

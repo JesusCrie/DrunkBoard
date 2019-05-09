@@ -4,27 +4,25 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
 import { LayoutModule } from '@angular/cdk/layout';
-import { ToolbarComponent } from './toolbar/toolbar.component';
+import { ToolbarModule } from './toolbar/toolbar.module';
+import { AdminDialogComponent } from './toolbar/admin-dialog/admin-dialog.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ToolbarComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
     LayoutModule,
-    MatSidenavModule,
-    MatListModule
+    ToolbarModule
   ],
   providers: [],
+  entryComponents: [
+    AdminDialogComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

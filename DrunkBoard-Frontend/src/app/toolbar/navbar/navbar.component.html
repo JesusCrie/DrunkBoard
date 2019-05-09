@@ -1,8 +1,7 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
   <nav class="nav-container">
-    <!-- Left side -->
     <a routerLink="/" class="logo flex-center">
-      <img src="../favicon.ico" alt="Logo">
+      <img src="../../../favicon.ico" alt="Logo">
       <span>&nbsp;Drunk Board</span>
     </a>
     <a routerLink="/" mat-button>
@@ -12,10 +11,8 @@
       Best Of
     </a>
 
-    <!-- Filler -->
     <span class="nav-fill"></span>
 
-    <!-- Right side -->
-    <button mat-button>Admin Mode</button>
+    <button mat-button (click)="openAdminLoginDialog()">Admin Mode</button>
   </nav>
 </mat-toolbar>

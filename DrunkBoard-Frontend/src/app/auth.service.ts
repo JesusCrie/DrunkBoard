@@ -12,8 +12,12 @@ export class AuthService {
   loggedIn = false;
 
   login(password: string): Observable<boolean> {
-    this.loggedIn = true;
-    return of(true);
+    return new Observable(observer => {
+      setTimeout(() => {
+        this.loggedIn = true;
+        return observer.next(true);
+      }, 3000);
+    });
   }
 
   logout(): Observable<void> {
