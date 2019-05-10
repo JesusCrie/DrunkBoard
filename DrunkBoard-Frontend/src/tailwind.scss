@@ -1,0 +1,25 @@
+// A subset of normalize. In conflict with angular material it seems
+// @tailwind preflight;
+
+// Define components
+@tailwind components;
+
+html, body {
+  @apply w-full;
+}
+
+body {
+  @apply m-0;
+}
+
+.flex-center {
+  @apply flex justify-center;
+}
+
+.spacing-container {
+  & > * {
+    @apply mx-3;
+  }
+}
+
+@tailwind utilities;

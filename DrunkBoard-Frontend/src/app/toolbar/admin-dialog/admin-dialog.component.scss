@@ -1,7 +1,9 @@
-.waiting {
-  padding: 15px;
-}
+@import "../../../styles.scss";
 
 mat-form-field {
-  width: 100%;
+  @extend .w-full;
+}
+
+mat-dialog-actions > * {
+  @extend .mx-1;
 }
