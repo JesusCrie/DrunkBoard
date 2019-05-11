@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ToolbarModule } from './toolbar/toolbar.module';
 import { AdminDialogComponent } from './toolbar/admin-dialog/admin-dialog.component';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { AdminDialogComponent } from './toolbar/admin-dialog/admin-dialog.compon
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
-    ToolbarModule
+    ToolbarModule,
+    LeaderboardModule
   ],
   providers: [],
   entryComponents: [
