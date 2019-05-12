@@ -1,0 +1,22 @@
+<div *ngIf="isCountryFilter()" class="flex-1">
+  <span>Country</span>
+  <span *ngFor="let country of countryFilter.countries"
+        [appFlag]="country.isoCode" [squared]="true"
+        [matTooltip]="country.name"
+        matTooltipPosition="above"
+        class="rounded ml-1"></span>
+</div>
+
+<ng-container *ngIf="isRatingFilter()">
+  <span>Rating &lt; {{ ratingFilter.minRating }} <img src="../../../assets/pint.png" alt="Beers"></span>
+</ng-container>
+
+<ng-container *ngIf="isAlcoholFilter()">
+  <span *ngIf="alcoholFilter.min">{{ alcoholFilter.min | number:'1.0-1' | alcoholRate }}&nbsp;&le;&nbsp;</span>
+  <span>Alcohol</span>
+  <span *ngIf="alcoholFilter.max">&nbsp;&lt;&nbsp;{{ alcoholFilter.max | number:'1.0-1' | alcoholRate }}</span>
+</ng-container>
+
+<ng-container *ngIf="isNameFilter()">
+  <span>{{ nameFilter.name | titlecase }}</span>
+</ng-container>

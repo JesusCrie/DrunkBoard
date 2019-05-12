@@ -28,7 +28,8 @@
             ],
             "styles": [
               "src/theme.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/flag-icon-css/sass/flag-icon.scss"
             ],
             "scripts": [],
             "es5BrowserSupport": true

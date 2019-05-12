@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Select a range of alcohol rates</h1>
+
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="sliderRange" class="range range-control">
+    <ng5-slider [options]="options" formControlName="minMaxControl" required></ng5-slider>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="float-right">
+  <button mat-stroked-button color="accent" [disabled]="sliderRange.invalid" (click)="confirm()">Ok</button>
+</mat-dialog-actions>

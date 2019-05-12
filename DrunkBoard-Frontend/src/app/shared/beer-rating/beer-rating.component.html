@@ -1,0 +1,5 @@
+<div class="flex overflow-hidden">
+  <div *ngFor="let beerIndex of mBeerRange"
+       class="beer h-8 flex-shrink" [class.bnw]="beerIndex > selectedIndex" [tabIndex]="beerIndex"
+       (mouseenter)="hooverBeer(beerIndex)" (click)="clickBeer(beerIndex)"></div>
+</div>

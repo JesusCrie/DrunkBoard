@@ -1,0 +1,8 @@
+.beer {
+  background-image: url("../../../assets/pint32.png");
+  flex-basis: 32px;
+
+  &.bnw {
+    filter: grayscale(100%);
+  }
+}
