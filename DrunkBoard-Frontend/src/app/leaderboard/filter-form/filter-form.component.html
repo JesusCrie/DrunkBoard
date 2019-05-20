@@ -1,20 +1,27 @@
 <mat-form-field class="w-full">
   <mat-chip-list #filterList>
-    <mat-chip *ngFor="let filter of filters"
-              selectable removable>
-      {{ filter }}
+    <mat-chip *ngFor="let filter of filters$ | async"
+              selectable removable (removed)="removeFilter(filter)">
+      <app-filter-content-autodetect [filter]="filter"></app-filter-content-autodetect>
       <mat-icon matChipRemove>cancel</mat-icon>
     </mat-chip>
 
+    <!--suppress HtmlFormInputWithoutLabel -->
     <input #filterInput placeholder="Filters"
            [formControl]="filterControl"
            [matAutocomplete]="auto"
            [matChipInputFor]="filterList"
            [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
-           matChipInputAddOnBlur="true">
+           matChipInputAddOnBlur="true"
+           (matChipInputTokenEnd)="createFilter($event)">
   </mat-chip-list>
 
-  <mat-autocomplete #auto="matAutocomplete">
-
+  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                    [displayWith]="displayAutocompleteValue"
+                    (optionSelected)="autocompleteAddFilter($event)">
+    <mat-option *ngFor="let filter of autocompleteValues$ | async"
+                [value]="filter">
+      {{ filter.name }}
+    </mat-option>
   </mat-autocomplete>
 </mat-form-field>
