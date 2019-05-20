@@ -8,10 +8,10 @@ import {
   MatCardModule,
   MatChipsModule,
   MatDialogModule,
-  MatDividerModule,
+  MatDividerModule, MatExpansionModule,
   MatIconModule,
   MatInputModule,
-  MatSelectModule, MatTooltipModule,
+  MatSelectModule, MatTableModule, MatTooltipModule,
   MatTreeModule
 } from '@angular/material';
 import { SharedModule } from '../shared/shared.module';
@@ -53,7 +53,9 @@ import { FilterDialogAlcoholComponent } from './filter-dialog-alcohol/filter-dia
     FormsModule,
     ReactiveFormsModule,
     MatTooltipModule,
-    Ng5SliderModule
+    Ng5SliderModule,
+    MatExpansionModule,
+    MatTableModule
   ]
 })
 export class LeaderboardModule {

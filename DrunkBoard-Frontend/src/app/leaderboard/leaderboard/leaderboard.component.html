@@ -1,9 +1,47 @@
 <div class="content-container">
   <mat-card>
     <mat-card-content class="pt-20 mx-4">
-
       <app-filter-form></app-filter-form>
-
     </mat-card-content>
   </mat-card>
+
+  <div class="mt-4">
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let i of [1, 2, 3, 4]">
+        <mat-expansion-panel-header>
+          Yolo {{ i }}
+        </mat-expansion-panel-header>
+
+        Jojo t bo v{{ i }}
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <div class="mt-4">
+    <table mat-table [dataSource]="leadData" class="w-full">
+      <ng-container matColumnDef="rank">
+        <td mat-cell *matCellDef="let el">{{ el.rank }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="first_name">
+        <td mat-cell *matCellDef="let el">{{ el.first_name }} {{ el.last_name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="country_iso">
+        <td mat-cell *matCellDef="let el">
+          <span [appFlag]="el.country_iso" [squared]="true" class="rounded ml-1"></span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alcohol">
+        <td mat-cell *matCellDef="let el">{{ el.alcohol }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="votes_average">
+        <td mat-cell *matCellDef="let el">{{ el.votes_average }}/5</td>
+      </ng-container>
+
+      <tr mat-row *matRowDef="let rows; columns: ['rank', 'first_name', 'country_iso', 'alcohol', 'votes_average'];"></tr>
+    </table>
+  </div>
 </div>
