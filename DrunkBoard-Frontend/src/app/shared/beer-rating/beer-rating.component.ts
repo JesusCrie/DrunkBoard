@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-beer-rating',
@@ -17,6 +17,10 @@ export class BeerRatingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.mBeerRange = new Array(this.beerAmount).fill(0).map((x, i) => i);
+  }
+
+  get beerRange(): number[] {
+    return this.mBeerRange;
   }
 
   get selectedIndex(): number {
