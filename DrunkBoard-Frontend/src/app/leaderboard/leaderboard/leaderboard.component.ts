@@ -9,6 +9,10 @@ import { MatTableDataSource } from '@angular/material';
 export class LeaderboardComponent {
 
   leadData = new MatTableDataSource(TEST_DATA);
+
+  get testData(): LeadData[] {
+    return TEST_DATA;
+  }
 }
 
 export interface LeadData {
