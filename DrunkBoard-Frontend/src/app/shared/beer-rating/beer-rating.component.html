@@ -1,5 +1,5 @@
 <div class="flex overflow-hidden">
-  <img src="../../../assets/pint.png" [width]="size" [height]="size" class="beer flex-shrink"
+  <img src="assets/pint.svg" [width]="size" [height]="size" class="beer flex-shrink"
        *ngFor="let beerIndex of beerRange" [tabIndex]="beerIndex" [class.bnw]="beerIndex > selectedIndex"
        (mouseenter)="hooverBeer(beerIndex)" (click)="clickBeer(beerIndex)">
 </div>
