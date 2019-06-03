@@ -7,43 +7,23 @@
 
   <div class="mt-4">
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let i of [1, 2, 3, 4]">
-        <mat-expansion-panel-header>
-          Yolo {{ i }}
-        </mat-expansion-panel-header>
-
-        Jojo t bo v{{ i }}
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-
-  <div class="mt-4">
-    <mat-accordion>
-      <table class="w-full">
-        <mat-expansion-panel *ngFor="let el of testData">
-          <mat-expansion-panel-header>
-            <td>#{{ el.rank }}</td>
-            <td>{{ el.first_name }} {{ el.last_name }}</td>
-          </mat-expansion-panel-header>
-          Lorem ipsum dolor sit amet.
-        </mat-expansion-panel>
-      </table>
-    </mat-accordion>
-  </div>
-
-  <div class="mt-4">
-    <mat-accordion>
-      <mat-expansion-panel *ngFor="let el of testData">
+      <mat-expansion-panel *ngFor="let el of filteredData$ | async; let rank = index">
         <mat-expansion-panel-header>
           <table class="mat-typography w-full">
             <tr>
-              <td>#{{ el.rank }}</td>
-              <td>{{ el.first_name }} {{ el.last_name }}</td>
-              <td>
-                <span [appFlag]="el.country_iso" [squared]="true" class="rounded ml-1"></span>
+              <td class="w-1/6">#{{ rank + 1 }}</td>
+              <td class="w-1/3">{{ el.first_name }} {{ el.last_name }}</td>
+              <td class="w-1/6">
+                <span [appFlag]="el.country_iso" [squared]="true"
+                      class="rounded ml-1"
+                      [matTooltip]="el.country_iso.toUpperCase()" matTooltipPosition="above"></span>
               </td>
-              <td>{{ el.alcohol | alcoholRate }}</td>
-              <td>{{ el.votes_average }}/5</td>
+              <td class="w-1/6">{{ el.alcohol | alcoholRate }}</td>
+              <td class="w-1/5">
+                <img *ngFor="let beer of [1, 2, 3, 4, 5]"
+                     class="beer" [class.bnw]="beer > el.votes_average"
+                     src="../../../assets/pint.png" alt="Beers" width="24" height="24">
+              </td>
             </tr>
           </table>
         </mat-expansion-panel-header>
@@ -53,31 +33,4 @@
     </mat-accordion>
   </div>
 
-  <div class="mt-4">
-    <table mat-table [dataSource]="leadData" class="w-full">
-      <ng-container matColumnDef="rank">
-        <td mat-cell *matCellDef="let el">#{{ el.rank }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="first_name">
-        <td mat-cell *matCellDef="let el">{{ el.first_name }} {{ el.last_name }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="country_iso">
-        <td mat-cell *matCellDef="let el">
-          <span [appFlag]="el.country_iso" [squared]="true" class="rounded ml-1"></span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="alcohol">
-        <td mat-cell *matCellDef="let el">{{ el.alcohol }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="votes_average">
-        <td mat-cell *matCellDef="let el">{{ el.votes_average }}/5</td>
-      </ng-container>
-
-      <tr mat-row *matRowDef="let rows; columns: ['rank', 'first_name', 'country_iso', 'alcohol', 'votes_average'];"></tr>
-    </table>
-  </div>
 </div>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { RatingFilter } from '../filter';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-filter-dialog-rating',
@@ -8,19 +9,16 @@ import { FormControl } from '@angular/forms';
 })
 export class FilterDialogRatingComponent {
 
-  public options = {
-    floor: 0,
-    ceil: 5,
-    step: 1,
-    minRange: 1,
-    hideLimitLabels: true,
-    hidePointerLabels: false,
-    showSelectionBar: true
-  };
+  public minRating: number;
 
-  public sliderRange = new FormControl(this.options.minRange);
+  constructor(private dialogRef: MatDialogRef<FilterDialogRatingComponent>) {}
+
+  onRateChange(event: number) {
+    this.minRating = event;
+  }
 
   public confirm(): void {
-
+    const filter = new RatingFilter(this.minRating);
+    this.dialogRef.close(filter);
   }
 }

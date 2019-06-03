@@ -11,6 +11,10 @@ export class AuthService {
 
   loggedIn = false;
 
+  get isLogged() {
+    return this.loggedIn;
+  }
+
   login(password: string): Observable<boolean> {
     return new Observable(observer => {
       setTimeout(() => {

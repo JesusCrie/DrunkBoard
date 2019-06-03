@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Filter } from './filter';
 import { Subject } from 'rxjs';
+import { LeadData } from './leaderboard/leaderboard.component';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,12 @@ export class FilterService {
 
   constructor() {
     this.filters$ = new Subject();
+  }
+
+  public filter(data: LeadData[]): LeadData[] {
+    return data.filter(item => {
+      return this.filters.filter(f => !f.check(item)).length <= 0;
+    });
   }
 
   /**

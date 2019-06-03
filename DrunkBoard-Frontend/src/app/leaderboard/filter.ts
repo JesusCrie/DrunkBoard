@@ -1,6 +1,14 @@
 import { COUNTRIES, Country } from '../country';
+import { LeadData } from './leaderboard/leaderboard.component';
 
 export interface Filter {
+
+  /**
+   * Check whether the data is valid for this filter.
+   * @param item - The item to pass.
+   */
+  check(item: LeadData): boolean;
+
   /**
    * Check whether this filter is considered empty and cant't affect anything.
    */
@@ -41,6 +49,16 @@ export class CountryFilter implements Filter {
     this.countries.push(arg);
   }
 
+  check(item: LeadData): boolean {
+    for (const country of this.countries) {
+      if (country.isoCode.toLowerCase() === item.country_iso.toLowerCase()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   empty(): boolean {
     return this.countries.length === 0;
   }
@@ -79,6 +97,10 @@ export class RatingFilter implements Filter {
     this.putArg(arg);
   }
 
+  check(item: LeadData): boolean {
+    return item.votes_average >= (this.minRating + 1);
+  }
+
   empty(): boolean {
     return this.minRating == null || this.minRating === 0;
   }
@@ -95,10 +117,8 @@ export class RatingFilter implements Filter {
     return other.constructor === RatingFilter;
   }
 
+  // I am the source of truth
   merge(other: RatingFilter): RatingFilter {
-    if (other.minRating < this.minRating) {
-      this.minRating = other.minRating;
-    }
     return this;
   }
 }
@@ -109,6 +129,11 @@ export class AlcoholFilter implements Filter {
 
   constructor(min?: number, max?: number) {
     this.putArg({min, max});
+  }
+
+  check(item: LeadData): boolean {
+
+    return item.alcohol >= (this.min || 0) && item.alcohol <= (this.max || 15);
   }
 
   empty(): boolean {
@@ -156,7 +181,13 @@ export class NameFilter implements Filter {
   public name: string;
 
   constructor(arg?: string) {
-    this.putArg(arg);
+    this.putArg(arg.toLowerCase());
+  }
+
+  check(item: LeadData): boolean {
+    return item.first_name.toLowerCase().indexOf(this.name) !== -1
+      || item.last_name.toLowerCase().indexOf(this.name) !== -1
+      || item.story.toLowerCase().indexOf(this.name) !== -1;
   }
 
   empty(): boolean {

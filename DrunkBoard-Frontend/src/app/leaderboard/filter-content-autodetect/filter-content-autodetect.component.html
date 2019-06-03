@@ -7,9 +7,11 @@
         class="rounded ml-1"></span>
 </div>
 
-<ng-container *ngIf="isRatingFilter()">
-  <span>Rating &lt; {{ ratingFilter.minRating }} <img src="../../../assets/pint.png" alt="Beers"></span>
-</ng-container>
+<div *ngIf="isRatingFilter()" class="flex-center">
+  <span class="my-auto">Min </span>
+  <img *ngFor="let beer of ratingRange"
+    class="my-auto" src="../../../assets/pint.png" alt="Beers">
+</div>
 
 <ng-container *ngIf="isAlcoholFilter()">
   <span *ngIf="alcoholFilter.min">{{ alcoholFilter.min | number:'1.0-1' | alcoholRate }}&nbsp;&le;&nbsp;</span>

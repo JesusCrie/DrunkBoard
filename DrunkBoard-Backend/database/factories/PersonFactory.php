@@ -8,7 +8,7 @@ $factory->define(Person::class, function (Faker $faker) {
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
         //'country_iso' => $faker->countryCode,
-        'alcohol' => $faker->randomFloat(2, 0, 50),
+        'alcohol' => $faker->randomFloat(2, 0, 15),
         'story' => $faker->paragraph,
         'created_at' => $faker->dateTime,
         'updated_at' => $faker->dateTime

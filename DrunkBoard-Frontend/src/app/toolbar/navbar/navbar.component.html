@@ -7,12 +7,13 @@
     <a routerLink="/" mat-button>
       Leaderboard
     </a>
-    <a routerLink="/best" mat-button>
+    <!--a routerLink="/best" mat-button>
       Best Of
-    </a>
+    </a-->
 
     <span class="nav-fill"></span>
 
-    <button mat-button (click)="openAdminLoginDialog()">Admin Mode</button>
+    <button mat-button *ngIf="!isLogged" (click)="openAdminLoginDialog()">Admin Mode</button>
+    <button mat-button *ngIf="isLogged" (click)="logout()">Logout</button>
   </nav>
 </mat-toolbar>

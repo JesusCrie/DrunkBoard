@@ -26,6 +26,10 @@ export class FilterContentAutodetectComponent {
     return this.filter as RatingFilter;
   }
 
+  get ratingRange(): number[] {
+    return new Array(this.ratingFilter.minRating + 1);
+  }
+
   public isAlcoholFilter(): boolean {
     return this.filter instanceof AlcoholFilter;
   }

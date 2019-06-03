@@ -23,7 +23,7 @@ export class FilterDialogCountryComponent {
   }
 
   // Construct the filter and return it
-  confirm(): void {
+  public confirm(): void {
     const country: Country = this.countryCode.value;
     const filter = new CountryFilter(country);
     this.dialogRef.close(filter);

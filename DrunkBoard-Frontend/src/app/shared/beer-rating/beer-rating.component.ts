@@ -17,6 +17,7 @@ export class BeerRatingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.mBeerRange = new Array(this.beerAmount).fill(0).map((x, i) => i);
+    this.selectedIndexChanged.emit(0);
   }
 
   get beerRange(): number[] {

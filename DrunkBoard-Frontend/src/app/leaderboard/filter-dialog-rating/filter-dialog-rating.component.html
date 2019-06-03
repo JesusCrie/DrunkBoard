@@ -1,9 +1,9 @@
 <h1 mat-dialog-title>Select a minimum rating</h1>
 
-<mat-dialog-content class="mat-typography">
-  <app-beer-rating></app-beer-rating>
+<mat-dialog-content class="mat-typography h-16">
+  <app-beer-rating (selectedIndexChanged)="onRateChange($event)" size="50"></app-beer-rating>
 </mat-dialog-content>
 
 <mat-dialog-actions class="float-right">
-  <button mat-stroked-button color="accent" [disabled]="sliderRange.invalid" (click)="confirm()">Ok</button>
+  <button mat-stroked-button color="accent" [disabled]="minRating == -1" (click)="confirm()">Ok</button>
 </mat-dialog-actions>
