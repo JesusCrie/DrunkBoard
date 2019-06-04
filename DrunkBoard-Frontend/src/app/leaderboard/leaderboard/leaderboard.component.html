@@ -20,9 +20,7 @@
               </td>
               <td class="w-1/6">{{ el.alcohol | alcoholRate }}</td>
               <td class="w-1/5">
-                <img *ngFor="let beer of [1, 2, 3, 4, 5]"
-                     class="beer" [class.bnw]="beer > el.votes_average"
-                     src="assets/pint.svg" alt="Beers" width="24" height="24">
+                <app-beer-rating [size]="24" [mSelectedIndex]="el.votes_average - 1"></app-beer-rating>
               </td>
             </tr>
           </table>

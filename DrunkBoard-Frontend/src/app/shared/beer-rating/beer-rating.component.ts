@@ -12,7 +12,7 @@ export class BeerRatingComponent implements OnInit {
   @Output() public selectedIndexChanged = new EventEmitter<number>();
 
   private mBeerRange: number[];
-  private mSelectedIndex: number;
+  @Input() public mSelectedIndex: number;
   private hasClicked: boolean;
 
   public ngOnInit(): void {
